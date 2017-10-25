@@ -9,7 +9,6 @@ import Immutable from "immutable";
 
 let subs = {};
 let currentBucketSize;
-let wallet_api = new WalletApi();
 let marketStats = {};
 let statTTL = 60 * 2 * 1000; // 2 minutes
 
@@ -135,10 +134,10 @@ class MarketsActions {
                         // Only check for call and settle orders if either the base or quote is the CORE asset
                         if (isMarketAsset) {
                             callPromise = Apis.instance().db_api().exec("get_call_orders", [
-                                marketAsset.id, 200
+                                marketAsset.id, 300
                             ]);
                             settlePromise = Apis.instance().db_api().exec("get_settle_orders", [
-                                marketAsset.id, 200
+                                marketAsset.id, 300
                             ]);
                         }
 
@@ -159,7 +158,7 @@ class MarketsActions {
                         // of operations received in the subscription update
                         Promise.all([
                             Apis.instance().db_api().exec("get_limit_orders", [
-                                base.get("id"), quote.get("id"), 200
+                                base.get("id"), quote.get("id"), 300
                             ]),
                             onlyLimitOrder ? null : callPromise,
                             onlyLimitOrder ? null : settlePromise,
@@ -210,10 +209,10 @@ class MarketsActions {
 
                 if (isMarketAsset) {
                     callPromise = Apis.instance().db_api().exec("get_call_orders", [
-                        marketAsset.id, 200
+                        marketAsset.id, 300
                     ]);
                     settlePromise = Apis.instance().db_api().exec("get_settle_orders", [
-                        marketAsset.id, 200
+                        marketAsset.id, 300
                     ]);
                 }
 
@@ -233,7 +232,7 @@ class MarketsActions {
                         subscription, base.get("id"), quote.get("id")
                     ]),
                     Apis.instance().db_api().exec("get_limit_orders", [
-                        base.get("id"), quote.get("id"), 200
+                        base.get("id"), quote.get("id"), 300
                     ]),
                     callPromise,
                     settlePromise,
@@ -307,7 +306,7 @@ class MarketsActions {
 
     createLimitOrder(account, sellAmount, sellAsset, buyAmount, buyAsset, expiration, isFillOrKill, fee_asset_id) {
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
 
         let feeAsset = ChainStore.getAsset(fee_asset_id);
         if( feeAsset.getIn(["options", "core_exchange_rate", "base", "asset_id"]) === "1.3.0" && feeAsset.getIn(["options", "core_exchange_rate", "quote", "asset_id"]) === "1.3.0" ) {
@@ -346,7 +345,7 @@ class MarketsActions {
     }
 
     createLimitOrder2(order) {
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
 
         // let feeAsset = ChainStore.getAsset(fee_asset_id);
         // if( feeAsset.getIn(["options", "core_exchange_rate", "base", "asset_id"]) === "1.3.0" && feeAsset.getIn(["options", "core_exchange_rate", "quote", "asset_id"]) === "1.3.0" ) {
@@ -369,7 +368,7 @@ class MarketsActions {
 
     createPredictionShort(order, collateral, account, sellAmount, sellAsset, buyAmount, collateralAmount, buyAsset, expiration, isFillOrKill, fee_asset_id = "1.3.0") {
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
 
         // Set the fee asset to use
         fee_asset_id = accountUtils.getFinalFeeAsset(order.seller, "call_order_update", order.fee.asset_id);
@@ -402,7 +401,7 @@ class MarketsActions {
         // Set the fee asset to use
         let fee_asset_id = accountUtils.getFinalFeeAsset(accountID, "limit_order_cancel");
 
-        var tr = wallet_api.new_transaction();
+        var tr = WalletApi.new_transaction();
         tr.add_type_operation("limit_order_cancel", {
             fee: {
                 amount: 0,

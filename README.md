@@ -6,7 +6,7 @@ This is a light wallet that connects to a BitShares API provided by the *witness
 
 It *stores all keys locally* in the browser, *never exposing your keys to anyone* as it signs transactions locally before transmitting them to the API server which then broadcasts them to the blockchain network. The wallet is encrypted with a password of your choosing and encrypted in a browser database.
 
->这是一个链接Bitsahres API的轻钱包，而Bitashares API由可执行的 *witness_node*  提供
+>这是一个链接BitShares API的轻钱包，而BitShares API由可执行的 *witness_node*  提供
 
 >它把*所有的密钥存储在本地浏览器上*，*绝对不要把你的密钥暴露给任何人*，因为它会先在本地签署交易，再传到API服务器上，最后广播至区块链网络。这个钱包被一个你选择的密码加密，也会被浏览器数据库加密。
 
@@ -46,11 +46,12 @@ npm install
 
 ## Running the dev server&emsp;运行开发服务器
 
-The dev server uses Express in combination with Webpack 2.
+The dev server uses Express in combination with Webpack.
 
+<<<<<<< fcd7d7a6e6b91ecd0695bdac7368ef9dbaaec712
 Once all the packages have been installed you can start the development server by running:
 
->开发服务器使用了EXPRSS和Webpack 2.
+>开发服务器使用了EXPRESS和Webpack.
 
 >一旦所有的封包被安装了，你就可以通过'web'文件夹并且输入下列代码，开始启动开发服务器
 ```

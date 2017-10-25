@@ -7,8 +7,6 @@ import {Apis} from "bitsharesjs-ws";
 import alt from "alt-instance";
 import SettingsStore from "stores/SettingsStore";
 
-let application_api = new ApplicationApi();
-
 class WalletActions {
 
     /** Restore and make active a new wallet_object. */
@@ -39,6 +37,10 @@ class WalletActions {
         return true;
     }
 
+    deleteWallet(name) {
+        return name;
+    }
+
     createAccountWithPassword( account_name, password, registrar, referrer, referrer_percent, refcode ) {
         let {privKey : owner_private} = WalletDb.generateKeyFromPassword(account_name, "owner", password);
         let {privKey: active_private} = WalletDb.generateKeyFromPassword(account_name, "active", password);
@@ -48,7 +50,7 @@ class WalletActions {
 
         return new Promise((resolve, reject) => {
             let create_account = () => {
-                return application_api.create_account(
+                return ApplicationApi.create_account(
                     owner_private.toPublicKey().toPublicKeyString(),
                     active_private.toPublicKey().toPublicKeyString(),
                     account_name,
@@ -130,7 +132,7 @@ class WalletActions {
         };
 
         let create_account = () => {
-            return application_api.create_account(
+            return ApplicationApi.create_account(
                 owner_private.private_key.toPublicKey().toPublicKeyString(),
                 active_private.private_key.toPublicKey().toPublicKeyString(),
                 account_name,
@@ -196,7 +198,7 @@ class WalletActions {
         let balance = cvb.balance.amount,
             earned = cvb.policy[1].coin_seconds_earned,
             vestingPeriod = cvb.policy[1].vesting_seconds,
-            availablePercent = forceAll ? 1 : earned / (vestingPeriod * balance);
+            availablePercent = (forceAll || vestingPeriod) === 0 ? 1 : earned / (vestingPeriod * balance);
 
         tr.add_type_operation("vesting_balance_withdraw", {
             fee: { amount: "0", asset_id: "1.3.0"},
